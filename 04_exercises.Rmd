@@ -115,7 +115,7 @@ ggmap(world) +
 twin_cities <- get_stamenmap(
   bbox = c(left = -93.7206, bottom = 44.6813, right = -92.7202, top = 45.2837),
   maptype = "terrain",
-  zoom = 10)
+  zoom = 9)
 
 ggmap(twin_cities) +
   geom_point(data = Starbucks,
@@ -125,7 +125,7 @@ ggmap(twin_cities) +
   
 
   3. In the Twin Cities plot, play with the zoom number. What does it do?  (just describe what it does - don't actually include more than one map). 
-  
+  **The lower the zoom number, the more zoomed in the map is. For example between 1-5 it is really zoomed in and we can't tell what we are looking at, we just see blurred/pixelated image with black dots. But when the number is bigger (9 and up), we clearly see with labels where we are.**
 
   4. Try a couple different map types (see `get_stamenmap()` in help and look at `maptype`). Include a map with one of the other map types.  
 ```{r}
@@ -142,7 +142,22 @@ ggmap(twin_cities) +
 
   5. Add a point to the map that indicates Macalester College and label it appropriately. There are many ways you can do think, but I think it's easiest with the `annotate()` function (see `ggplot2` cheatsheet).
 ```{r}
+twin_cities <- get_stamenmap(
+  bbox = c(left = -93.7206, bottom = 44.6813, right = -92.7202, top = 45.2837),
+  maptype = "terrain",
+  zoom = 10)
 
+ggmap(twin_cities) +
+  geom_point(data = Starbucks,
+             aes(x = Longitude, y = Latitude)) + 
+  annotate("point",
+           x = -93.17704,
+           xmin = -93.16157,
+           y = 44.93404,
+           ymin = 44.94153, # how to use xmin, xmax for coordinates
+           color = "red",
+           label = "Macalester") +
+  theme_map()
 ```
   
 
@@ -160,14 +175,35 @@ starbucks_with_2018_pop_est <-
   starbucks_us_by_state %>% 
   left_join(census_pop_est_2018,
             by = c("state_name" = "state")) %>% 
-  mutate(starbucks_per_10000 = (n/est_pop_2018)*10000)
+  mutate(starbucks_per_10000 = (n/est_pop_2018)*10000) 
 ```
 
   6. **`dplyr` review**: Look through the code above and describe what each line of code does.
+  line 169 : giving census_pop_est_2018 data to R
+  line 170 : separating the "state" column into two separate columns ("dot" and "state") of equal length to the original dataset. 
+  line 171 : selecting to "dots" column to remove it from the new dataset.
+  line 172 : taking the "state" variable and making the names all lowercase.
+  line 174 : Naming this new dataset starbucks_with_2018_pop_es.
+  line 175 : piping in starbucks_us_by_state dataset to create this new one named above.
+  line 176/177 : joining the starbucks_us_by_state and the census_pop_est_2018 by "state_name" which is equivlen to "state" in the census dataset.
+  line 178 : creating a new variable, starbucks_per_10000, which is equivalent to the number of rows divided by the est_pop_2018 variable, times 10,000.
 
-  7. Create a choropleth map that shows the number of Starbucks per 10,000 people on a map of the US. Use a new fill color, add points for all Starbucks in the US (except Hawaii and Alaska), add an informative title for the plot, and include a caption that says who created the plot (you!). Make a conclusion about what you observe.
+  7. Create a choropleth map that shows the number of Starbucks per 10,000 people on a map of the US. Use a new fill color, add points for all Starbucks in the US (except Hawaii and Alaska), add an informative title for the plot, and include a caption that says who created the plot (you!). Make a conclusion about what you observe. **It seems the most amount of starbucks are on the west coast, near where they originated, while smaller/more rural states such as Oklahoma, Arkansas, North Dakota, etc, have the least amount, and the rest of the states are in an average range.**
 ```{r}
+states_map <- map_data("state")
 
+starbucks_with_2018_pop_est %>% 
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = state_name,
+               fill = (n/est_pop_2018)*10000)) +
+  expand_limits(x = states_map$long, y = states_map$lat) + 
+  labs(title = "Quantity Starbucks in the US per 10,000",
+       caption = "Author : Chloe Nance",
+       fill = "") +
+  scale_fill_viridis_c(option = "inferno") +
+  theme_map() +
+  theme(legend.background = element_blank())
 ```
 
 ### A few of your favorite things (`leaflet`)
@@ -182,7 +218,13 @@ starbucks_with_2018_pop_est <-
   
   * If there are other variables you want to add that could enhance your plot, do that now.  
 ```{r}
-
+favorite_plcs_chloe <- tibble(
+  place = c("Home", "Dong Chun Hong", "Clair's", 
+            "Uchi", "La Madeleine", "Super Chix",
+            "Hmart", "Cauldron", "Gold dust Tattoo", "Fatstraws" ),
+  long = c(),
+  lat = c(),
+  top_three = c("Home","Clair's", "Hmart"))
 ```
   
 ## Revisiting old datasets
