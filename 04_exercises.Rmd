@@ -13,7 +13,7 @@ output:
 
 
 ```{r setup, include=FALSE}
-#knitr::opts_chunk$set(echo = TRUE, error=TRUE, message=FALSE, warning=FALSE)
+knitr::opts_chunk$set(echo = TRUE, error=TRUE, message=FALSE, warning=FALSE)
 ```
 
 ```{r libraries}
@@ -40,61 +40,16 @@ starbucks_us_by_state <- Starbucks %>%
   count(`State/Province`) %>% 
   mutate(state_name = str_to_lower(abbr2state(`State/Province`))) 
 
-# Lisa's favorite St. Paul places - example for you to create your own data
-favorite_stp_by_lisa <- tibble(
-  place = c("Home", "Macalester College", "Adams Spanish Immersion", 
-            "Spirit Gymnastics", "Bama & Bapa", "Now Bikes",
-            "Dance Spectrum", "Pizza Luce", "Brunson's"),
-  long = c(-93.1405743, -93.1712321, -93.1451796, 
-           -93.1650563, -93.1542883, -93.1696608, 
-           -93.1393172, -93.1524256, -93.0753863),
-  lat = c(44.950576, 44.9378965, 44.9237914,
-          44.9654609, 44.9295072, 44.9436813, 
-          44.9399922, 44.9468848, 44.9700727)
-  )
 
 #COVID-19 data from the New York Times
 covid19 <- read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
 
 ```
 
-## Put your homework on GitHub!
-
-If you were not able to get set up on GitHub last week, go [here](https://github.com/llendway/github_for_collaboration/blob/master/github_for_collaboration.md) and get set up first. Then, do the following (if you get stuck on a step, don't worry, I will help! You can always get started on the homework and we can figure out the GitHub piece later):
-
-* Create a repository on GitHub, giving it a nice name so you know it is for the 4th weekly exercise assignment (follow the instructions in the document/video).  
-* Copy the repo name so you can clone it to your computer. In R Studio, go to file --> New project --> Version control --> Git and follow the instructions from the document/video.  
-* Download the code from this document and save it in the repository folder/project on your computer.  
-* In R Studio, you should then see the .Rmd file in the upper right corner in the Git tab (along with the .Rproj file and probably .gitignore).  
-* Check all the boxes of the files in the Git tab under Stage and choose commit.  
-* In the commit window, write a commit message, something like "Initial upload" would be appropriate, and commit the files.  
-* Either click the green up arrow in the commit window or close the commit window and click the green up arrow in the Git tab to push your changes to GitHub.  
-* Refresh your GitHub page (online) and make sure the new documents have been pushed out.  
-* Back in R Studio, knit the .Rmd file. When you do that, you should have two (as long as you didn't make any changes to the .Rmd file, in which case you might have three) files show up in the Git tab - an .html file and an .md file. The .md file is something we haven't seen before and is here because I included `keep_md: TRUE` in the YAML heading. The .md file is a markdown (NOT R Markdown) file that is an interim step to creating the html file. They are displayed fairly nicely in GitHub, so we want to keep it and look at it there. Click the boxes next to these two files, commit changes (remember to include a commit message), and push them (green up arrow).  
-* As you work through your homework, save and commit often, push changes occasionally (maybe after you feel finished with an exercise?), and go check to see what the .md file looks like on GitHub.  
-* If you have issues, let me know! This is new to many of you and may not be intuitive at first. But, I promise, you'll get the hang of it! 
-
-
-## Instructions
-
-* Put your name at the top of the document. 
-
-* **For ALL graphs, you should include appropriate labels.** 
-
-* Feel free to change the default theme, which I currently have set to `theme_minimal()`. 
-
-* Use good coding practice. Read the short sections on good code with [pipes](https://style.tidyverse.org/pipes.html) and [ggplot2](https://style.tidyverse.org/ggplot2.html). **This is part of your grade!**
-
-* When you are finished with ALL the exercises, uncomment the options at the top so your document looks nicer. Don't do it before then, or else you might miss some important warnings and messages.
-
-
-## Warm-up exercises from tutorial
-
-These exercises will reiterate what you learned in the "Mapping data with R" tutorial. If you haven't gone through the tutorial yet, you should do that first.
 
 ### Starbucks locations (`ggmap`)
 
-  1. Add the `Starbucks` locations to a world map. Add an aesthetic to the world map that sets the color of the points according to the ownership type. What, if anything, can you deduce from this visualization?  
+  1. Add the `Starbucks` locations to a world map. Add an aesthetic to the world map that sets the color of the points according to the ownership type. What, if anything, can you deduce from this visualization?  **We can deduce that most of the Starbucks locations are found in North America and are licensed or company owned. Joint ventures are mostly only found in East Asia and some of Northern Europe and then the rest of the Starbucks are licensed**
 ```{r}
 world <- get_stamenmap(
     bbox = c(left = -180, bottom = -57, right = 179, top = 82.1), 
@@ -105,8 +60,12 @@ ggmap(world) +
   geom_point(data = Starbucks, 
              aes(x = Longitude, y = Latitude, color = `Ownership Type`), 
              alpha = .3, 
-             size = .1) +
-  theme_map()
+             size = .5) +
+  labs(title = "Locations of Starbucks all over ther world",
+       caption = "Author : Chloe Nance",
+       fill = "") +
+  theme_map() +
+  theme(plot.title = element_text(face = "bold", hjust = .5)) 
 ```
   
 
@@ -120,7 +79,11 @@ twin_cities <- get_stamenmap(
 ggmap(twin_cities) +
   geom_point(data = Starbucks,
              aes(x = Longitude, y = Latitude)) +
-  theme_map()
+    labs(title = "Locations of Starbucks in the Twin Cities",
+       caption = "Author : Chloe Nance",
+       fill = "") +
+  theme_map() +
+  theme(plot.title = element_text(face = "bold", hjust = .5)) 
 ```
   
 
@@ -137,7 +100,11 @@ twin_cities <- get_stamenmap(
 ggmap(twin_cities) +
   geom_point(data = Starbucks,
              aes(x = Longitude, y = Latitude)) +
-  theme_map()
+    labs(title = "Locations of Starbucks in the Twin Cities",
+       caption = "Author : Chloe Nance",
+       fill = "") +
+  theme_map() +
+  theme(plot.title = element_text(face = "bold", hjust = .5)) 
 ```
 
   5. Add a point to the map that indicates Macalester College and label it appropriately. There are many ways you can do think, but I think it's easiest with the `annotate()` function (see `ggplot2` cheatsheet).
@@ -150,7 +117,7 @@ twin_cities <- get_stamenmap(
 ggmap(twin_cities) +
   geom_point(data = Starbucks,
              aes(x = Longitude, y = Latitude)) + 
-  annotate("point",
+   annotate("point",
            x = -93.17123,
            y = 44.93790,
            color = "red") +
@@ -159,7 +126,13 @@ ggmap(twin_cities) +
            y = 44.93,
            color = "red",
            label = "Macalester") +
-  theme_map()
+    labs(title = "Locations of Starbucks in the Twin Cities",
+         subtitle = "In relation to Macalester College",
+       caption = "Author : Chloe Nance",
+       fill = "") +
+  theme_map() +
+  theme(plot.title = element_text(face = "bold", hjust = .5),
+        plot.subtitle = element_text(face = "bold", hjust = .5)) 
 ```
   
 
@@ -181,14 +154,14 @@ starbucks_with_2018_pop_est <-
 ```
 
   6. **`dplyr` review**: Look through the code above and describe what each line of code does.
-  line 169 : giving census_pop_est_2018 data to R
-  line 170 : separating the "state" column into two separate columns ("dot" and "state") of equal length to the original dataset. 
-  line 171 : selecting to "dots" column to remove it from the new dataset.
-  line 172 : taking the "state" variable and making the names all lowercase.
-  line 174 : Naming this new dataset starbucks_with_2018_pop_es.
-  line 175 : piping in starbucks_us_by_state dataset to create this new one named above.
-  line 176/177 : joining the starbucks_us_by_state and the census_pop_est_2018 by "state_name" which is equivlen to "state" in the census dataset.
-  line 178 : creating a new variable, starbucks_per_10000, which is equivalent to the number of rows divided by the est_pop_2018 variable, times 10,000.
+  **line 169 : giving census_pop_est_2018 data to R**
+  **line 170 : separating the "state" column into two separate columns ("dot" and "state") of equal length to the original dataset.** 
+  **line 171 : selecting to "dots" column to remove it from the new dataset.**
+  **line 172 : taking the "state" variable and making the names all lowercase.**
+  **line 174 : Naming this new dataset starbucks_with_2018_pop_es.**
+  **line 175 : piping in starbucks_us_by_state dataset to create this new one named above.**
+  **line 176/177 : joining the starbucks_us_by_state and the census_pop_est_2018 by "state_name" which is equivlen to "state" in the census dataset.**
+  **line 178 : creating a new variable, starbucks_per_10000, which is equivalent to the number of rows divided by the est_pop_2018 variable, times 10,000.**
 
   7. Create a choropleth map that shows the number of Starbucks per 10,000 people on a map of the US. Use a new fill color, add points for all Starbucks in the US (except Hawaii and Alaska), add an informative title for the plot, and include a caption that says who created the plot (you!). Make a conclusion about what you observe. **It seems the most amount of starbucks are on the west coast, near where they originated, while smaller/more rural states such as Oklahoma, Arkansas, North Dakota, etc, have the least amount, and the rest of the states are in an average range.**
 ```{r}
@@ -204,8 +177,12 @@ starbucks_with_2018_pop_est %>%
        caption = "Author : Chloe Nance",
        fill = "") +
   scale_fill_viridis_c(option = "inferno") +
+   labs(title = "Number of Starbucks per 10,00 people in the US",
+       caption = "Author : Chloe Nance",
+       fill = "") +
   theme_map() +
-  theme(legend.background = element_blank())
+  theme(plot.title = element_text(face = "bold", hjust = .5),
+        legend.background = element_blank())
 ```
 
 ### A few of your favorite things (`leaflet`)
@@ -248,7 +225,6 @@ leaflet(favorite_plcs_chloe) %>%
                color = col2hex("red"),
                opacity = .3) %>% 
   addLegend(pal = pal, values = ~top_three)
-
 ```
   
 ## Revisiting old datasets
@@ -290,13 +266,17 @@ Station_Trips <- Trips %>%
 
 ggmap(USA_map) +
   geom_point(data = Station_Trips,
-             aes(x = long, y = lat),
+             aes(x = long, y = lat, color = freq_stations),
              alpha = 1,
              size = 1) +
-  theme_map()
+  labs(title = "Total number of departures per station",
+       caption = "Author : Chloe Nance",
+       fill = "") +
+  theme_map() +
+  theme(plot.title = element_text(face = "bold", hjust = .5))
 ```
   
-  10. Only 14.4% of the trips in our data are carried out by casual users. Create a plot that shows which area(s) have stations with a much higher percentage of departures by casual users. What patterns do you notice? Also plot this on top of a map. I think it will be more clear what the patterns are.
+  10. Only 14.4% of the trips in our data are carried out by casual users. Create a plot that shows which area(s) have stations with a much higher percentage of departures by casual users. What patterns do you notice? Also plot this on top of a map. I think it will be more clear what the patterns are. **It seems the most casual riders are located in the center of the city which makes sense as it would be an easy form of transportation to get around while the registered users may want to venture out further away from the city**
   
 ```{r}
 USA_map <- get_stamenmap(
@@ -318,14 +298,18 @@ ggmap(USA_map) +
              alpha = 1,
              size = 1) +
   scale_colour_viridis_c() +
-  theme_map()
+  labs(title = "Percentage of departures by casual users",
+       caption = "Author : Chloe Nance",
+       fill = "") +
+  theme_map() +
+  theme(plot.title = element_text(face = "bold", hjust = .5))
 ```
   
 ### COVID-19 data
 
 The following exercises will use the COVID-19 data from the NYT.
 
-  11. Create a map that colors the states by the most recent cumulative number of COVID-19 cases (remember, these data report cumulative numbers so you don't need to compute that). Describe what you see. What is the problem with this map?
+  11. Create a map that colors the states by the most recent cumulative number of COVID-19 cases (remember, these data report cumulative numbers so you don't need to compute that). Describe what you see. What is the problem with this map? **It seems that only a few states have the highest amount of cumulative cases (Texas, Cali, and Florida) while the rest are relatively lower. The problem seems to be that it doesn't show precicely enoug the amount of casses because even though they are relatively low compared to each other, compared to the world it is still high**
 ```{r}
 states_map <- map_data("state")
 
@@ -342,7 +326,9 @@ covid19 %>%
   labs(title = "Most recent cumulative COVID-19 cases per state",
        caption = "Author : Chloe Nance",
        fill = "") +
-  theme_map()
+  theme_map() +
+  theme(plot.title = element_text(face = "bold", hjust = .5),
+        legend.background = element_blank())
 ```
   
   12. Now add the population of each state to the dataset and color the states by most recent cumulative cases/10,000 people. See the code for doing this with the Starbucks data. You will need to make some modifications. 
@@ -361,13 +347,15 @@ covid_10000 %>%
   ggplot() +
   geom_map(map = states_map,
            aes(map_id = states,
-               fill = covid_sum)) +
+               fill = cases_per10)) +
   expand_limits(x = states_map$long, y = states_map$lat) + 
    scale_fill_viridis_c(option = "inferno") +
   labs(title = "Most recent cumulative COVID-19 cases per state",
        caption = "Author : Chloe Nance",
        fill = "") +
-  theme_map()
+  theme_map() +
+  theme(plot.title = element_text(face = "bold", hjust = .5),
+        legend.background = element_blank())
 ```
   
   13. **CHALLENGE** Choose 4 dates spread over the time period of the data and create the same map as in exercise 12 for each of the dates. Display the four graphs together using faceting. What do you notice?
@@ -431,9 +419,23 @@ leaflet(mpls_all) %>%
   addLegend(pal = pal, values = ~prop_sus)
 ```
   
-  18. Use `leaflet` to create a map of your own choosing. Come up with a question you want to try to answer and use the map to help answer that question. Describe what your map shows. 
+  18. Use `leaflet` to create a map of your own choosing. Come up with a question you want to try to answer and use the map to help answer that question. Describe what your map shows. **This map shows proportion of poverty in each Minneapolis neighborhood.**
 ```{r}
+mpls_demo_nbhd <- mpls_nbhd %>% 
+  mutate(neighborhood = BDNAME) %>% 
+  left_join(MplsDemo,
+            by = c("neighborhood")) 
 
+pal <- colorNumeric("viridis", domain = mpls_demo_nbhd$poverty)
+
+leaflet(mpls_demo_nbhd) %>% 
+  addProviderTiles(providers$CartoDB.DarkMatter) %>%
+  addPolygons(label = ~neighborhood,
+             fillColor = ~pal(poverty),
+             color = ~pal(poverty),
+             opacity = 5,
+             fillOpacity = .8) %>%
+  addLegend(pal = pal, values = ~poverty)
 ```
   
   
